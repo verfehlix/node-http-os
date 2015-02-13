@@ -6,6 +6,7 @@ No security mechanisms etc, don't use with sensitive data. Use at your own risk.
 * The port http-os will listen on
 * The update rate (how often the time series will be updated)
 * The size of the time series (maximal amount of elements the time series can hold)
+* Verbosity (via *logToConsole*. determines if something will be logged into the console)
 
 **Where:** In *http-os.js*, see `//config` comment
 
