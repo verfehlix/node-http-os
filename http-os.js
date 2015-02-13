@@ -3,8 +3,8 @@ var os = require('os');
 
 //config
 var port = 8899;
-var updateRate = 10000; //how often the time series gets updated (in ms)
-var timeSeriesSize = 2; //how many entries the timeSeries can hold
+var updateRate = 1000; //how often the time series gets updated (in ms)
+var timeSeriesSize = 50; //how many entries the timeSeries can hold
 var logToConsole = false; //should app-startup & pushes to timeSeries be logged to the console? 
 
 //time series holds osData over time
@@ -22,14 +22,18 @@ var refreshTimeSeries = function (){
 
 var getOsData = function() {
     var osData = {
-        time: getDateTime(),
+        time: {
+            full: getDateTime(),
+            hour: getDateTimeHour(),
+            day: getDateTimeDay()
+        },
         hostname: os.hostname(),
         type: os.type(),
         platform: os.platform(),
         uptime: os.uptime(),
         mem: {
             free: os.freemem(),
-            freePercent: ((os.freemem() / os.totalmem()) * 100).toFixed(2),
+            freePercent: calcPercent(os.freemem(),os.totalmem()),
             total: os.totalmem()
         },
         cpus: os.cpus(),
@@ -37,6 +41,10 @@ var getOsData = function() {
     };
 
     return osData;
+};
+
+var calcPercent = function(a,b){
+    return ((a / b) * 100).toFixed(1);
 };
 
 function getDateTime() {
@@ -60,6 +68,35 @@ function getDateTime() {
     day = (day < 10 ? "0" : "") + day;
 
     return hour + ":" + min + ":" + sec + " - " + day + "." + month + "." + year + ".";
+};
+
+function getDateTimeHour() {
+    var date = new Date();
+
+    var hour = date.getHours();
+    hour = (hour < 10 ? "0" : "") + hour;
+
+    var min = date.getMinutes();
+    min = (min < 10 ? "0" : "") + min;
+
+    var sec = date.getSeconds();
+    sec = (sec < 10 ? "0" : "") + sec;
+
+    return hour + ":" + min + ":" + sec;
+};
+
+function getDateTimeDay() {
+    var date = new Date();
+
+    var year = date.getFullYear();
+
+    var month = date.getMonth() + 1;
+    month = (month < 10 ? "0" : "") + month;
+
+    var day = date.getDate();
+    day = (day < 10 ? "0" : "") + day;
+
+    return day + "." + month + "." + year + ".";
 };
 
 //init app
