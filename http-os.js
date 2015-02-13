@@ -5,6 +5,7 @@ var os = require('os');
 var port = 8899;
 var updateRate = 10000; //how often the time series gets updated (in ms)
 var timeSeriesSize = 2; //how many entries the timeSeries can hold
+var logToConsole = false; //should app-startup & pushes to timeSeries be logged to the console? 
 
 //time series holds osData over time
 var timeSeries = [];
@@ -14,7 +15,9 @@ var refreshTimeSeries = function (){
         timeSeries.shift();
     }
     timeSeries.push(getOsData());
-    console.log(getDateTime() + " pushed new data to time series.");
+    if(logToConsole){
+        console.log(getDateTime() + " pushed new data to time series.");
+    }
 };
 
 var getOsData = function() {
@@ -62,13 +65,17 @@ function getDateTime() {
 //init app
 var app = http.createServer(function(req, res) {
     res.setHeader('Content-Type', 'application/json');
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
     //send timeSeries as json data
-    res.end(JSON.stringify(timeSeries, null, 4));
+    res.end(JSON.stringify(timeSeries,null,4));
 });
 
 //startup app
-console.log("node-http-os listening on port " + port);
+if(logToConsole){
+    console.log("node-http-os listening on port " + port);    
+}
 app.listen(port);
 
 //start interval in which time series gets updated (+ first initial push to time series)
