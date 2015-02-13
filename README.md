@@ -7,6 +7,8 @@ No security mechanisms etc, don't use with sensitive data. Use at your own risk.
 * The update rate (how often the time series will be updated)
 * The size of the time series (maximal amount of elements the time series can hold)
 
+**Where:** In *http-os.js*, see `//config` comment
+
 ### What you will get:
 ```
 [
